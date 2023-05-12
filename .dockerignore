@@ -1,0 +1,7 @@
+.dockerignore
+.git
+.vs
+.vscode
+notebooks/
+data/
+p_bot/
