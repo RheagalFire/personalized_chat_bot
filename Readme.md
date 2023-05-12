@@ -25,13 +25,19 @@ There is clear demonstration for every step that was carried out in the notebook
 [OpenAi Bot with Conversational Memory](https://github.com/RheagalFire/personalized_chat_bot/blob/main/notebooks/5.%20Langchain%2B%20Pinecone%20%2B%20Openai.ipynb) : Demonstrates how to create a Conversational Bot that can rembeber previous chat details.
 
 ## <u> Local Setup</u>
-```git clone https://github.com/RheagalFire/personalized_chat_bot.git ```
+```
+git clone https://github.com/RheagalFire/personalized_chat_bot.git 
+```
 
 Put your OPENAI_API_KEY and PINECONE_KEY in the .env file. (create a .env file)
 
-```docker build -t container_name .```
+```
+docker build -t container_name .
+```
 
-```docker run -p 8501:8501 container_name:tag```
+```
+docker run -p 8501:8501 container_name:tag
+```
 
 Your app would run in localhost:8501
 
