@@ -19,9 +19,13 @@ There is clear demonstration for every step that was carried out in the notebook
 ## <u>Notebooks</u>
 
 [Proccesing Whatsapp Data](https://github.com/RheagalFire/personalized_chat_bot/blob/main/notebooks/1%20.%20Convert%20And%20Clean%20Whatsapp%20Data.ipynb) : Includes reading the .txt file from the chat export and cleaning it and structuring the data for feeding it to pinecone.<br>
+<br>
 [Embedding Creation](https://github.com/RheagalFire/personalized_chat_bot/blob/main/notebooks/2.%20Embeddings%20creation.ipynb) : To perform vector search , create Embeddings using text-embedding-ada-002 model.<br>
+<br>
 [Ingesting Data to Pinecone](https://github.com/RheagalFire/personalized_chat_bot/blob/main/notebooks/3.%20Pinecone%20Push%20Data.ipynb) : In this notebook , ingest vectors along with metadata to the pinecone index. (includes creating an pinecone index and pushing data in batches)<br>
+<br>
 [Query the Pinecone Datbase](https://github.com/RheagalFire/personalized_chat_bot/blob/main/notebooks/4.%20Pinecone%20Query%20Data.ipynb) : Discusses how to query the pinecone database.<br>
+<br>
 [OpenAi Bot with Conversational Memory](https://github.com/RheagalFire/personalized_chat_bot/blob/main/notebooks/5.%20Langchain%2B%20Pinecone%20%2B%20Openai.ipynb) : Demonstrates how to create a Conversational Bot that can rembeber previous chat details.
 
 ## <u> Local Setup</u>
