@@ -19,7 +19,7 @@ st.title('Personalized Bot')
 # choose the personality
 current_person = st.radio(
     "ChatBot Beahave like",
-    ('Aarish', 'Prady'),
+    ('Aarish Alam', 'Prady Yadav'),
     horizontal=True,
     key="personality"
 )
@@ -27,17 +27,30 @@ current_person = st.radio(
 #make the context using openAI
 embed_model = "text-embedding-ada-002"
 
+#current config settings.
+if 'config' not in st.session_state:
+    st.session_state['config'] = ""
+
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
 
 if 'past' not in st.session_state:
     st.session_state['past'] = []
     
-if 'input' not in st.session_state:
-    st.session_state['input'] = ""
+if 'pre_query_context' not in st.session_state:
+    st.session_state['pre_query_context'] = ""
     
+if 'contexts' not in st.session_state:
+    st.session_state['contexts'] = []
 
-input_query = st.text_input("Enter your query here 👇", st.session_state["input"] , key="input")
+if 'actual_input' not in st.session_state:
+    st.session_state.actual_input = ""
+    
+def submit():
+    st.session_state.actual_input = st.session_state.clear_input_key
+    st.session_state.clear_input_key = ''
+    
+input_query = st.text_input("Enter your query here 👇", key="clear_input_key", on_change=submit)
 
 
 
@@ -48,10 +61,7 @@ query = st.sidebar.radio(
 )
 
 if query:
-    st.session_state['last_preference'] = query
-    st.session_state['chat_started'] = True
-    st.session_state['show_chat'] = True
-
+    st.session_state.pre_query_context = query
     openai.api_key = OPENAI_API_KEY
     res = openai.Embedding.create(
         input=[query],
@@ -63,16 +73,10 @@ if query:
     result = db.index.query(xq, top_k=10, include_metadata=True,namespace='text_field_9')
 
     contexts = [item['metadata']['text'] for item in result['matches']]
-else:
-     st.write('Please set a preference before starting the chat.')
 
-     
-string1 = """
-Using the provided conversation data between two persons, your task is to emulate the speaking style and language of one of the individuals while answering the user's question.
-Draw upon your own knowledge and training to provide relevant and informative responses, but ensure that your answers reflect the mannerisms, tone, and language used by the chosen person. 
-Always respond in the language of the conversation data shared, regardless of the question asked.
-Chosen person is
-"""
+
+with open('prompt.txt','r') as file:
+    string1 = file.read()
 
 string2 = """.
 {chat_history}
@@ -91,8 +95,11 @@ prompt = PromptTemplate(
 	template=primer
 )
 
-if 'entity_memory' not in st.session_state:
-	st.session_state.entity_memory = ConversationBufferMemory(memory_key="chat_history")
+if 'entity_memory' not in st.session_state or st.session_state.config != (current_person+query):
+    st.session_state.entity_memory = ConversationBufferMemory(memory_key="chat_history")
+    st.session_state.config = current_person + query
+    st.session_state['generated'] = []
+    st.session_state['past'] = []
 
 memory = st.session_state.entity_memory
 
@@ -104,16 +111,17 @@ llm_chain = LLMChain(
 )
 
 
-if (input_query):
-	augmented_query = "\n\n---\n\n".join(contexts)+"\n\n-----\n\n"+ input_query
+if (st.session_state.actual_input):
+	augmented_query = "\n\n---\n\n".join(contexts)+"\n\n-----\n\n"+ st.session_state.actual_input
 	response = ""
 		
 	response = llm_chain.predict(human_input=augmented_query)
 	
 	## storing session states
-	st.session_state.past.append(input_query)
+	st.session_state.past.append(st.session_state.actual_input)
 	st.session_state.generated.append(response)
 	st.session_state.entity_memory = memory
+	st.session_state.actual_input = ''
 
 
 ## rendering the messages
@@ -123,6 +131,6 @@ if st.session_state['generated']:
         message(st.session_state["generated"][i], key=str(i))
         message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
 
-message("Hello! I am a personalized bot trained to behave like Arish Alam. Ask me any thing and I will reply in the way he does.") 
+message("Hello! I am a personalized bot trained to behave like " + current_person + ". Ask me any thing and I will reply in the way he does.") 
 
 
